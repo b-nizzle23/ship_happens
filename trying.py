@@ -21,8 +21,8 @@ pygame.display.set_caption("Triangle Ship Game")
 BLACK = (0, 0, 0)
 
 # Create ships with different health values
-ship2 = TriangleShip(150, 100, 0, (255, 255, 0), 2.5, 3, 50, 40, 1, 20, 600, 420, 1000)
-ship1 = TriangleShip(1000, 600, 180, (255, 0, 0), 4, 5, 40, 7, 2, 9, 350, 250, 800)
+ship2 = TriangleShip(150,100,0,'base')
+ship1 = TriangleShip(1000, 600,180,'behemoth')
 
 # Create asteroids
 # asteroid1 = Asteroid(random.randint(0, WIDTH/3), -50, 0, 5, 1, random.randint(30, 100), 100)
@@ -45,7 +45,7 @@ while running:
     if keys[pygame.K_LEFT]:
         ship1.rotate(-1)
     if keys[pygame.K_UP]:
-        ship1.move_forward()
+        ship1.move_forward(WIDTH, HEIGHT)
     if keys[pygame.K_l]:
         ship1.shoot()
     if keys[pygame.K_d]:
@@ -53,7 +53,7 @@ while running:
     if keys[pygame.K_a]:
         ship2.rotate(-1)
     if keys[pygame.K_w]:
-        ship2.move_forward()
+        ship2.move_forward(WIDTH, HEIGHT)
     if keys[pygame.K_SPACE]:
         ship2.shoot()
 
@@ -64,7 +64,7 @@ while running:
     ship2.draw(screen)
 
     if ship1.is_dead() or ship2.is_dead():
-        print("Yellow Ship Wins!" if ship2.is_dead() else "Red Ship Wins!")
+        print("Player 2 won!" if ship2.is_dead() else "Player 1 wins!")
         running = False
 
     pygame.display.flip()
