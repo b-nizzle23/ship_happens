@@ -32,7 +32,7 @@ class TriangleShip:
                 "bullet_speed": 20,
                 "bullet_range": 850,
                 "bullet_damage": 500,
-                "health": 750,
+                "health": 751,
                 "bullet_size": "small"
             },
             "melee": {
