@@ -57,6 +57,7 @@ def game_loop():
 
     while running:
         screen.blit(BLACK,(0,0))
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -110,7 +111,7 @@ def game_loop():
 def main():
     menu_running = True
     while menu_running:
-        screen.fill(BLACK)
+        screen.blit(BLACK, (0,0))
         show_menu()
 
         for event in pygame.event.get():
