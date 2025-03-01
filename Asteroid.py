@@ -2,7 +2,7 @@ import pygame
 import random
 
 class Asteroid:
-    def __init__(self, x, y, angle, rotation_speed, move_speed, size, contact_damage):
+    def __init__(self, x, y, angle, rotation_speed, move_speed, size, contact_damage, sprite):
         self.x = x
         self.y = y
         self.angle = angle
@@ -10,8 +10,8 @@ class Asteroid:
         self.move_speed = move_speed
         self.size = size
         self.contact_damage = contact_damage
-        #self.image = pygame.image.load('Sprites/Asteroid/asteroid-done.png')
-        #self.image = pygame.transform.scale(self.image, (,))
+        self.image = sprite
+        self.image = pygame.transform.scale(self.image, (size,size))
 
     def rotate(self):
         self.angle += 1
@@ -30,5 +30,5 @@ class Asteroid:
         return
 
     def draw(self, screen):
-        pygame.draw.circle(screen, (120, 100, 90), (int(self.x), int(self.y)), self.size)
-        #screen.blit(self.image, self.rect.topleft)
+        #pygame.draw.circle(screen, (120, 100, 90), (int(self.x), int(self.y)), self.size)
+        screen.blit(self.image, (self.x,self.y))

@@ -11,6 +11,7 @@ class Laser:
         self.damage = damage
         self.range = range_
         self.distance_traveled = 0
+        self.active = True
 
         if bullet_Size == "big":
             self.image = pygame.image.load("Sprites/Bullets/Big Bullet.png").convert_alpha()  # Ensure transparency
@@ -33,15 +34,15 @@ class Laser:
         self.rect.center = (self.x, self.y)
 
     def draw(self, screen):
-        screen.blit(self.rotated_image, self.rect.topleft)  # Draw the laser image
+        if self.active:
+            screen.blit(self.rotated_image, self.rect.topleft)
+        # Draw the laser image
 
     def has_expired(self):
-        return self.distance_traveled >= self.range
+        return self.distance_traveled >= self.range or not self.active
 
     def handle_laser_asteroid_collision(self, asteroid):
-        for laser in self.lasers[:]:
-            # Check if the laser has collided with the asteroid
-            distance = math.hypot(laser.x - asteroid.x, laser.y - asteroid.y)
-            if distance < asteroid.size:  # If laser hits asteroid
-                self.lasers.remove(laser)  # Remove the laser
+        # Check if the laser has collided with the asteroid
+        if math.hypot(self.x - asteroid.x, self.y - asteroid.y) < asteroid.size:
+            self.active = False  # Deactivate the laser
 

@@ -1,7 +1,6 @@
 from triangle_ship import TriangleShip
 from Asteroid import *
 import random
-import pygame
 
 # Initialize Pygame
 pygame.init()
@@ -29,6 +28,7 @@ def display_text(text, font, color, x, y):
     text_rect = text_surface.get_rect(center=(x, y))
     screen.blit(text_surface, text_rect)
 
+# Create ships with different health values
 
 def show_menu():
     menu_font = pygame.font.Font(None, 50)
@@ -141,6 +141,7 @@ def game_loop(ship1_type, ship2_type):
         ship1.update_lasers(screen, ship2)
         ship2.update_lasers(screen, ship1)
 
+        # draw ships
         ship1.draw(screen)
         ship2.draw(screen)
         for asteroid in asteroids:

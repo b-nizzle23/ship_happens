@@ -189,6 +189,7 @@ class TriangleShip:
             push_factor = 0.5
             push_x = math.cos(angle_between) * overlap * push_factor
             push_y = math.sin(angle_between) * overlap * push_factor
+            self.health -= asteroid.contact_damage
             
             self.x += push_x
             self.y += push_y
