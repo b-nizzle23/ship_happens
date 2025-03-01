@@ -1,5 +1,6 @@
 # laser.py
 import math
+import pygame
 
 class Laser:
     def __init__(self, x, y, angle, speed, damage, range_):

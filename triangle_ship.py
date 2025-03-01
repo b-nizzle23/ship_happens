@@ -3,100 +3,84 @@ import pygame
 import math
 import time
 from laser import Laser
+import pygame
 
 class TriangleShip:
-    def __init__(self, name):
+    def __init__(self, x, y, angle, name):
         # Dictionary that maps ship names to their parameters
         ship_data = {
             "base": {
-                "x": 1000,
-                "y": 600,
-                "angle": 180,
-                "color": (255, 0, 0),  # Red
-                "rotation_speed": 4,
-                "move_speed": 5,
-                "size": 40,
-                "contact_damage": 7,
-                "attack_speed": 2,
-                "bullet_speed": 9,
-                "bullet_range": 350,
-                "bullet_damage": 250,
-                "health": 800
-            },
-            "sniper": {
-                "x": 150,
-                "y": 100,
-                "angle": 0,
-                "color": (255, 255, 0),  # Yellow
-                "rotation_speed": 2.5,
-                "move_speed": 3,
-                "size": 50,
-                "contact_damage": 40,
-                "attack_speed": 1,
-                "bullet_speed": 20,
+                "color": (210, 180, 140),  # Tan
+                "rotation_speed": 2.75,
+                "move_speed": 4,
+                "size": 30,
+                "contact_damage": 100,
+                "attack_speed": 1.5,
+                "bullet_speed": 10,
                 "bullet_range": 600,
-                "bullet_damage": 420,
+                "bullet_damage": 250,
                 "health": 1000
             },
+            "sniper": {
+                "color": (255, 255, 255),  # White
+                "rotation_speed": 2.25,
+                "move_speed": 3,
+                "size": 20,
+                "contact_damage": 100,
+                "attack_speed": 1.25,
+                "bullet_speed": 20,
+                "bullet_range": 850,
+                "bullet_damage": 500,
+                "health": 750
+            },
             "melee": {
-                "x": 1000,
-                "y": 600,
                 "angle": 180,
                 "color": (255, 0, 0),  # Red
-                "rotation_speed": 4,
-                "move_speed": 5,
-                "size": 40,
-                "contact_damage": 7,
-                "attack_speed": 2,
-                "bullet_speed": 9,
-                "bullet_range": 350,
-                "bullet_damage": 250,
-                "health": 800
+                "rotation_speed": 2.5,
+                "move_speed": 4.5,
+                "size": 35,
+                "contact_damage": 250,
+                "attack_speed": 1.5,
+                "bullet_speed": 10,
+                "bullet_range": 600,
+                "bullet_damage": 100,
+                "health": 1000
             },
             "behemoth": {
-                "x": 1000,
-                "y": 600,
-                "angle": 180,
-                "color": (255, 0, 0),  # Red
-                "rotation_speed": 4,
-                "move_speed": 5,
-                "size": 40,
-                "contact_damage": 7,
-                "attack_speed": 2,
-                "bullet_speed": 9,
-                "bullet_range": 350,
-                "bullet_damage": 250,
-                "health": 800
+                "color": (0, 0, 255 ),  # Blue
+                "rotation_speed": 3,
+                "move_speed": 2.5,
+                "size": 45,
+                "contact_damage": 100,
+                "attack_speed": 1.25,
+                "bullet_speed": 8,
+                "bullet_range": 500,
+                "bullet_damage": 750,
+                "health": 1200
             },
             "assassin": {
-                "x": 1000,
-                "y": 600,
-                "angle": 180,
-                "color": (255, 0, 0),  # Red
-                "rotation_speed": 4,
-                "move_speed": 5,
-                "size": 40,
-                "contact_damage": 7,
-                "attack_speed": 2,
-                "bullet_speed": 9,
-                "bullet_range": 350,
-                "bullet_damage": 250,
-                "health": 800
+                "color": (128, 128, 128),  # Grey
+                "rotation_speed": 3.5,
+                "move_speed": 4.25,
+                "size": 30,
+                "contact_damage": 100,
+                "attack_speed": .75,
+                "bullet_speed": 10,
+                "bullet_range": 500,
+                "bullet_damage": 420,
+                "health": 750
             },
             "minigun": {
-                "x": 1000,
-                "y": 600,
-                "angle": 180,
-                "color": (255, 0, 0),  # Red
-                "rotation_speed": 4,
-                "move_speed": 5,
-                "size": 40,
-                "contact_damage": 7,
-                "attack_speed": 2,
-                "bullet_speed": 9,
-                "bullet_range": 350,
-                "bullet_damage": 250,
-                "health": 800
+                "color": (128, 0, 128),  # Purple
+                "rotation_speed": 2,
+                "move_speed": 4,
+                "size": 30,
+                "contact_damage": 100,
+                "attack_speed": 4,
+                "bullet_speed": 20,
+                "bullet_range": 600,
+                "bullet_damage": 100,
+                "health": 1000
             }
         }
 
@@ -107,9 +91,9 @@ class TriangleShip:
             raise ValueError(f"Invalid ship name: {name}")
 
         # Assign values to the class properties
-        self.x = data["x"]
-        self.y = data["y"]
-        self.angle = data["angle"]
+        self.x = x
+        self.y = y
+        self.angle = angle
         self.color = data["color"]
         self.rotation_speed = data["rotation_speed"]
         self.move_speed = data["move_speed"]
@@ -129,7 +113,9 @@ class TriangleShip:
     def rotate(self, direction):
         self.angle += self.rotation_speed * direction
 
-    def move_forward(self):
+
+    def move_forward(self, WIDTH, HEIGHT):
+
         new_x = self.x + self.move_speed * math.cos(math.radians(self.angle))
         new_y = self.y + self.move_speed * math.sin(math.radians(self.angle))
         half_size = self.size / 2
