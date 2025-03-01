@@ -1,5 +1,3 @@
-# trying.py
-import pygame
 from triangle_ship import TriangleShip
 from Asteroid import *
 import random
@@ -10,7 +8,7 @@ pygame.init()
 # Get full screen size
 full_width, full_height = pygame.display.Info().current_w, pygame.display.Info().current_h
 
-# Set window size to 75% of full screen
+# Set window size to 75% of full screenl
 WIDTH, HEIGHT = int(full_width * 0.75), int(full_height * 0.75)
 
 # Create screen
@@ -58,6 +56,7 @@ def game_loop():
     while running:
         screen.blit(BLACK,(0,0))
 
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -104,6 +103,12 @@ def game_loop():
             if ship1.is_dead() or ship2.is_dead():
                 print("Player 2 won!" if ship2.is_dead() else "Player 1 wins!")
                 running = False
+                if ship1.is_dead():
+                    winner = "Player 1"
+                else:
+                    winner = "Player 2"
+                #show_end_menu(screen,winner)
+                # if show_end_menu(screen,winner) == 'play_again':
 
             pygame.display.flip()
             clock.tick(60)
@@ -113,6 +118,7 @@ def main():
     while menu_running:
         screen.blit(BLACK, (0,0))
         show_menu()
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -127,80 +133,80 @@ def main():
                     quit()
     pygame.quit()
 
-SHIP_TYPES = ["base", "sniper", "melee", "behemoth", "assassin", "minigun"]
-
-def show_menu(screen, winner):
-    font = pygame.font.Font(None, 36)
-    text = font.render(f"{winner} wins! Play again?", True, WHITE)
-    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
-
-    play_again_text = font.render("Play Again", True, WHITE)
-    play_again_rect = play_again_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-
-    switch_chars_text = font.render("Switch Characters", True, WHITE)
-    switch_chars_rect = switch_chars_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))
-
-    quit_text = font.render("Quit", True, WHITE)
-    quit_rect = quit_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
-
-    screen.blit(text, text_rect)
-    screen.blit(play_again_text, play_again_rect)
-    screen.blit(switch_chars_text, switch_chars_rect)
-    screen.blit(quit_text, quit_rect)
-    pygame.display.flip()
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return "quit"
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = pygame.mouse.get_pos()
-                if play_again_rect.collidepoint(mouse_pos):
-                    return "play_again"
-                elif switch_chars_rect.collidepoint(mouse_pos):
-                    return "switch_chars"
-                elif quit_rect.collidepoint(mouse_pos):
-                    return "quit"
-
-def show_ship_selection(screen, player_num):
-    screen.fill(BLACK)
-    font = pygame.font.Font(None, 36)
-    text = font.render(f"Player {player_num}, choose your ship:", True, WHITE)
-    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 4))
-    screen.blit(text, text_rect)
-
-    ship_rects = []
-    for i, ship_type in enumerate(SHIP_TYPES):
-        ship_text = font.render(ship_type, True, WHITE)
-        ship_rect = ship_text.get_rect(center=(WIDTH // 2, HEIGHT // 3 + i * 50))
-        screen.blit(ship_text, ship_rect)
-        ship_rects.append(ship_rect)
-
-    pygame.display.flip()
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return None
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = pygame.mouse.get_pos()
-                for i, rect in enumerate(ship_rects):
-                    if rect.collidepoint(mouse_pos):
-                        return SHIP_TYPES[i]
-        pygame.time.Clock().tick(30)
-
-def show_confirmation(screen, player_num, ship_type):
-    screen.fill(BLACK)
-    font = pygame.font.Font(None, 36)
-    text = font.render(f"Player {player_num} chose: {ship_type}", True, WHITE)
-    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-    screen.blit(text, text_rect)
-    pygame.display.flip()
-
-    delay_timer = pygame.time.get_ticks()
-    delay_duration = 1000
-    while pygame.time.get_ticks() - delay_timer < delay_duration:
-        pygame.event.pump()
-        pygame.time.Clock().tick(30)
+# SHIP_TYPES = ["base", "sniper", "melee", "behemoth", "assassin", "minigun"]
+#
+# def show_end_menu(screen, winner):
+#     font = pygame.font.Font(None, 36)
+#     text = font.render(f"{winner} wins! Play again?", True, WHITE)
+#     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
+#
+#     play_again_text = font.render("Play Again", True, WHITE)
+#     play_again_rect = play_again_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+#
+#     switch_chars_text = font.render("Switch Characters", True, WHITE)
+#     switch_chars_rect = switch_chars_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))
+#
+#     quit_text = font.render("Quit", True, WHITE)
+#     quit_rect = quit_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
+#
+#     screen.blit(text, text_rect)
+#     screen.blit(play_again_text, play_again_rect)
+#     screen.blit(switch_chars_text, switch_chars_rect)
+#     screen.blit(quit_text, quit_rect)
+#     pygame.display.flip()
+#
+#     while True:
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 return "quit"
+#             if event.type == pygame.MOUSEBUTTONDOWN:
+#                 mouse_pos = pygame.mouse.get_pos()
+#                 if play_again_rect.collidepoint(mouse_pos):
+#                     return "play_again"
+#                 elif switch_chars_rect.collidepoint(mouse_pos):
+#                     return "switch_chars"
+#                 elif quit_rect.collidepoint(mouse_pos):
+#                     return "quit"
+#
+# def show_ship_selection(screen, player_num):
+#     screen.fill(BLACK)
+#     font = pygame.font.Font(None, 36)
+#     text = font.render(f"Player {player_num}, choose your ship:", True, WHITE)
+#     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 4))
+#     screen.blit(text, text_rect)
+#
+#     ship_rects = []
+#     for i, ship_type in enumerate(SHIP_TYPES):
+#         ship_text = font.render(ship_type, True, WHITE)
+#         ship_rect = ship_text.get_rect(center=(WIDTH // 2, HEIGHT // 3 + i * 50))
+#         screen.blit(ship_text, ship_rect)
+#         ship_rects.append(ship_rect)
+#
+#     pygame.display.flip()
+#
+#     while True:
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 return None
+#             if event.type == pygame.MOUSEBUTTONDOWN:
+#                 mouse_pos = pygame.mouse.get_pos()
+#                 for i, rect in enumerate(ship_rects):
+#                     if rect.collidepoint(mouse_pos):
+#                         return SHIP_TYPES[i]
+#         pygame.time.Clock().tick(30)
+#
+# def show_confirmation(screen, player_num, ship_type):
+#     screen.fill(BLACK)
+#     font = pygame.font.Font(None, 36)
+#     text = font.render(f"Player {player_num} chose: {ship_type}", True, WHITE)
+#     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+#     screen.blit(text, text_rect)
+#     pygame.display.flip()
+#
+#     delay_timer = pygame.time.get_ticks()
+#     delay_duration = 1000
+#     while pygame.time.get_ticks() - delay_timer < delay_duration:
+#         pygame.event.pump()
+#         pygame.time.Clock().tick(30)
 
 main()
