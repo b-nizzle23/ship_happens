@@ -1,6 +1,7 @@
 import pygame
 import math
 import time
+from Asteroid import *
 
 # Initialize Pygame
 pygame.init()
