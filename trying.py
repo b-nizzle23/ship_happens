@@ -18,11 +18,11 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Triangle Ship Game")
 
 # Colors
-BLACK = (0, 0, 0)
+BLACK = pygame.image.load("Sprites/Background/Background.png")
 
 # Create ships with different health values
-ship2 = TriangleShip(150,100,0,'base')
-ship1 = TriangleShip(1000, 600,180,'behemoth')
+ship2 = TriangleShip(WIDTH*.1,HEIGHT*.1,270,'minigun')
+ship1 = TriangleShip(WIDTH*.9, HEIGHT*.9,270,'base')
 
 # Create asteroids
 # asteroid1 = Asteroid(random.randint(0, WIDTH/3), -50, 0, 5, 1, random.randint(30, 100), 100)
@@ -34,7 +34,7 @@ running = True
 clock = pygame.time.Clock()
 
 while running:
-    screen.fill(BLACK)
+    screen.blit(BLACK,(0,0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
