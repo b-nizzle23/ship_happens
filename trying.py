@@ -25,9 +25,9 @@ ship2 = TriangleShip(150,100,0,'base')
 ship1 = TriangleShip(1000, 600,180,'behemoth')
 
 # Create asteroids
-# asteroid1 = Asteroid(random.randint(0, WIDTH/3), -50, 0, 5, 1, random.randint(30, 100), 100)
-# asteroid2 = Asteroid(random.randint(WIDTH/3, WIDTH/3*2), -50, 0, 5, 1, random.randint(30, 100), 100)
-# asteroid3 = Asteroid(random.randint(WIDTH/3*2, WIDTH), -50, 0, 5, 1, random.randint(30, 100), 100)
+asteroid1 = Asteroid(random.randint(0, int(WIDTH/3)), -50, 0, 5, 1, random.randint(30, 100), 100)
+asteroid2 = Asteroid(random.randint(int(WIDTH/3), int(WIDTH/3*2)), HEIGHT/2, 0, 5, 1, random.randint(30, 100), 100)
+asteroid3 = Asteroid(random.randint(int(WIDTH/3*2), WIDTH), -50, 0, 5, 1, random.randint(30, 100), 100)
 
 # Game loop
 running = True
@@ -57,11 +57,26 @@ while running:
     if keys[pygame.K_SPACE]:
         ship2.shoot()
 
+    # move asteroids
+    asteroid1.move()
+    asteroid1.rotate()
+    asteroid2.move()
+    asteroid2.rotate()
+    asteroid3.move()
+    asteroid3.rotate()
+
     ship1.handle_ship_collision(ship2)
     ship1.update_lasers(screen, ship2)
     ship2.update_lasers(screen, ship1)
+
+    # draw ships
     ship1.draw(screen)
     ship2.draw(screen)
+
+    # draw asteroids
+    asteroid1.draw(screen)
+    asteroid2.draw(screen)
+    asteroid3.draw(screen)
 
     if ship1.is_dead() or ship2.is_dead():
         print("Player 2 won!" if ship2.is_dead() else "Player 1 wins!")
