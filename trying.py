@@ -105,9 +105,12 @@ def game_loop(ship1_type, ship2_type):
     ship2 = TriangleShip(WIDTH * .9, HEIGHT * .9, 270, ship2_type)
 
     asteroids = [
-        Asteroid(random.randint(0, WIDTH // 3), HEIGHT * .3, 0, 5, 1, random.randint(10, 35), 100),
-        Asteroid(random.randint(WIDTH // 3, 2 * WIDTH // 3), HEIGHT / 2, 0, 5, 1, random.randint(20, 70), 100),
-        Asteroid(random.randint(2 * WIDTH // 3, WIDTH), -50, 0, 5, 1, random.randint(10, 35), 100)
+        Asteroid(random.randint(0, int(WIDTH / 3)), HEIGHT * .3, 0, 5, 1, random.randint(40, 70), 10,
+                             pygame.image.load('Sprites/Asteriod/asteroid-done.png')),
+        Asteroid(random.randint(int(WIDTH / 3), int(WIDTH / 3 * 2)), HEIGHT / 2, 0, 5, 1,
+                         random.randint(40, 90), 10, pygame.image.load('Sprites/Asteriod/asteroid-done.png')),
+        Asteroid(random.randint(int(WIDTH / 3 * 2), WIDTH), -50, 0, 5, 1, random.randint(40, 70), 10,
+                         pygame.image.load('Sprites/Asteriod/asteroid-done.png'))
     ]
 
     running = True
