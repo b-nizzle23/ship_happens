@@ -55,57 +55,57 @@ def game_loop():
     running = True
     clock = pygame.time.Clock()
 
-while running:
-    screen.blit(BLACK,(0,0))
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    while running:
+        screen.blit(BLACK,(0,0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT]:
-            ship1.rotate(1)
-        if keys[pygame.K_LEFT]:
-            ship1.rotate(-1)
-        if keys[pygame.K_UP]:
-            ship1.move_forward(WIDTH, HEIGHT)
-        if keys[pygame.K_l]:
-            ship1.shoot()
-        if keys[pygame.K_d]:
-            ship2.rotate(1)
-        if keys[pygame.K_a]:
-            ship2.rotate(-1)
-        if keys[pygame.K_w]:
-            ship2.move_forward(WIDTH, HEIGHT)
-        if keys[pygame.K_SPACE]:
-            ship2.shoot()
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_RIGHT]:
+                ship1.rotate(1)
+            if keys[pygame.K_LEFT]:
+                ship1.rotate(-1)
+            if keys[pygame.K_UP]:
+                ship1.move_forward(WIDTH, HEIGHT)
+            if keys[pygame.K_l]:
+                ship1.shoot()
+            if keys[pygame.K_d]:
+                ship2.rotate(1)
+            if keys[pygame.K_a]:
+                ship2.rotate(-1)
+            if keys[pygame.K_w]:
+                ship2.move_forward(WIDTH, HEIGHT)
+            if keys[pygame.K_SPACE]:
+                ship2.shoot()
 
-        # move asteroids
-        asteroid1.move()
-        asteroid1.rotate()
-        asteroid2.move()
-        asteroid2.rotate()
-        asteroid3.move()
-        asteroid3.rotate()
+            # move asteroids
+            asteroid1.move()
+            asteroid1.rotate()
+            asteroid2.move()
+            asteroid2.rotate()
+            asteroid3.move()
+            asteroid3.rotate()
 
-        ship1.handle_ship_collision(ship2)
-        ship1.update_lasers(screen, ship2)
-        ship2.update_lasers(screen, ship1)
+            ship1.handle_ship_collision(ship2)
+            ship1.update_lasers(screen, ship2)
+            ship2.update_lasers(screen, ship1)
 
-        # draw ships
-        ship1.draw(screen)
-        ship2.draw(screen)
+            # draw ships
+            ship1.draw(screen)
+            ship2.draw(screen)
 
-        # draw asteroids
-        asteroid1.draw(screen)
-        asteroid2.draw(screen)
-        asteroid3.draw(screen)
+            # draw asteroids
+            asteroid1.draw(screen)
+            asteroid2.draw(screen)
+            asteroid3.draw(screen)
 
-        if ship1.is_dead() or ship2.is_dead():
-            print("Player 2 won!" if ship2.is_dead() else "Player 1 wins!")
-            running = False
+            if ship1.is_dead() or ship2.is_dead():
+                print("Player 2 won!" if ship2.is_dead() else "Player 1 wins!")
+                running = False
 
-        pygame.display.flip()
-        clock.tick(60)
+            pygame.display.flip()
+            clock.tick(60)
 
 def main():
     menu_running = True
