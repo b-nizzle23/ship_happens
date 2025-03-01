@@ -4,15 +4,16 @@ import math
 import time
 from laser import Laser
 import pygame
+vec = pygame.math.Vector2
 
 class TriangleShip:
     def __init__(self, x, y, angle, name):
         # Dictionary that maps ship names to their parameters
         ship_data = {
             "base": {
-                "image": pygame.image.load("Sprites/Ships/Base.png").convert_alpha(),  # Tan
+                "image": pygame.image.load("Sprites/Ships/base.png").convert_alpha(),  # Tan
                 "rotation_speed": 2.75,
-                "move_speed": 4,
+                "move_speed": vec(0,0),
                 "size": 30,
                 "contact_damage": 100,
                 "attack_speed": 1.5,
@@ -20,12 +21,14 @@ class TriangleShip:
                 "bullet_range": 600,
                 "bullet_damage": 250,
                 "health": 1000,
-                "bullet_size": "normal"
+                "bullet_size": "normal",
+                "acceleration": .25,
+                "max_speed": 4
             },
             "sniper": {
-                "image": pygame.image.load("Sprites/Ships/Sniper.png").convert_alpha(),
+                "image": pygame.image.load("Sprites/Ships/sniper.png").convert_alpha(),
                 "rotation_speed": 2.25,
-                "move_speed": 3,
+                "move_speed": vec(0,0),
                 "size": 20,
                 "contact_damage": 100,
                 "attack_speed": 1.25,
@@ -33,13 +36,15 @@ class TriangleShip:
                 "bullet_range": 850,
                 "bullet_damage": 500,
                 "health": 750,
-                "bullet_size": "small"
+                "bullet_size": "small",
+                "acceleration": .4,
+                "max_speed": 3
             },
             "melee": {
                 "angle": 180,
-                "image": pygame.image.load("Sprites/Ships/Melee.png").convert_alpha(),
+                "image": pygame.image.load("Sprites/Ships/melee.png").convert_alpha(),
                 "rotation_speed": 2.5,
-                "move_speed": 4.5,
+                "move_speed": vec(0,0),
                 "size": 35,
                 "contact_damage": 250,
                 "attack_speed": 1.5,
@@ -47,12 +52,14 @@ class TriangleShip:
                 "bullet_range": 600,
                 "bullet_damage": 100,
                 "health": 1000,
-                "bullet_size": "normal"
+                "bullet_size": "normal",
+                "acceleration": .4,
+                "max_speed": 4.5
             },
             "behemoth": {
-                "image": pygame.image.load("Sprites/Ships/Behemoth.png").convert_alpha(),  # Blue
+                "image": pygame.image.load("Sprites/Ships/behemoth.png").convert_alpha(),  # Blue
                 "rotation_speed": 3,
-                "move_speed": 2.5,
+                "move_speed": vec(0,0),
                 "size": 45,
                 "contact_damage": 100,
                 "attack_speed": 1.25,
@@ -60,12 +67,14 @@ class TriangleShip:
                 "bullet_range": 500,
                 "bullet_damage": 750,
                 "health": 1200,
-                "bullet_size": "big"
+                "bullet_size": "big",
+                "acceleration": .15,
+                "max_speed": 1.25
             },
             "assassin": {
-                "image": pygame.image.load("Sprites/Ships/Assassin.png").convert_alpha(),
+                "image": pygame.image.load("Sprites/Ships/assassin.png").convert_alpha(),
                 "rotation_speed": 3.5,
-                "move_speed": 4.25,
+                "move_speed": vec(0,0),
                 "size": 30,
                 "contact_damage": 100,
                 "attack_speed": .75,
@@ -73,12 +82,15 @@ class TriangleShip:
                 "bullet_range": 500,
                 "bullet_damage": 420,
                 "health": 1000,
-                "bullet_size": "small"
+                "bullet_size": "small",
+                "acceleration": .4,
+                "max_speed": 4.25
+
             },
             "minigun": {
-                "image": pygame.image.load("Sprites/Ships/Minigun.png").convert_alpha(),
+                "image": pygame.image.load("Sprites/Ships/minigun.png").convert_alpha(),
                 "rotation_speed": 2,
-                "move_speed": 4,
+                "move_speed": vec(0,0),
                 "size": 30,
                 "contact_damage": 100,
                 "attack_speed": 4,
@@ -86,7 +98,9 @@ class TriangleShip:
                 "bullet_range": 600,
                 "bullet_damage": 100,
                 "health": 1000,
-                "bullet_size": "small"
+                "bullet_size": "small",
+                "acceleration": .25,
+                "max_speed": 4
             }
         }
 
@@ -115,21 +129,68 @@ class TriangleShip:
         self.last_shot_time = 0
         self.last_collision_time = 0
         self.bullet_Size = data["bullet_size"]
+        self.vx = 0
+        self.vy = 0
+        self.thrust = data["acceleration"]
+        self.topspeed = data["max_speed"]# Acceleration speed
+        self.name = name
+        self.n = 1
+        self.j = 1
 
 
     def rotate(self, direction):
         self.angle += self.rotation_speed * direction
+    def thrust_ani(self):
+        self.n += 1
+        if self.n == 10:  # After 9 frames, switch to the next sprite
+            self.j += 1
+            self.n = 1  # Reset n to 1 for the next animation cycle
+
+        if self.j > 3:  # If j exceeds 3, reset it for the animation loop
+            self.j = 1
+
+        # Load the correct sprite based on the current animation frame
+        self.image = pygame.image.load(f"Sprites/Ships/Thrust ani/{self.name}/{self.name}{self.j}.png").convert_alpha()
+    def not_thrust(self):
+        self.image = pygame.image.load("Sprites/Ships/"+self.name+".png").convert_alpha()
 
 
-    def move_forward(self, WIDTH, HEIGHT):
+    def apply_thrust(self):
 
-        new_x = self.x + self.move_speed * math.cos(math.radians(self.angle))
-        new_y = self.y + self.move_speed * math.sin(math.radians(self.angle))
-        half_size = self.size / 2
-        if half_size <= new_x <= WIDTH - half_size:
-            self.x = new_x
-        if half_size <= new_y <= HEIGHT - half_size:
-            self.y = new_y
+        # Accelerate or decelerate in the direction the ship is facing
+        rad = math.radians(self.angle)  # Convert degrees to radians
+
+        # Apply thrust in the x direction (forward/backward)
+        self.vx += self.thrust * math.cos(rad)
+
+        # Apply thrust in the y direction (forward/backward)
+        self.vy += self.thrust * math.sin(rad)
+
+        # Ensure the velocity does not exceed the max speed in any direction
+        speed = math.hypot(self.vx, self.vy)  # Calculate current speed
+        if speed > self.topspeed:
+            # Normalize the velocity vector and apply max speed
+            self.vx = (self.vx / speed) * self.topspeed
+            self.vy = (self.vy / speed) * self.topspeed
+
+    def update_position(self, width, height):
+        # Move ship based on velocity
+        self.x += self.vx
+        self.y += self.vy
+
+        # Ensure the ship doesn't go beyond the screen boundaries
+        if self.x < 0:
+            self.x = 0  # Prevent moving beyond the left edge
+        elif self.x > width:
+            self.x = width  # Prevent moving beyond the right edge
+
+        if self.y < 0:
+            self.y = 0  # Prevent moving beyond the top edge
+        elif self.y > height:
+            self.y = height  # Prevent moving beyond the bottom edge
+
+
+
 
     def shoot(self):
         current_time = time.time()

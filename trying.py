@@ -1,6 +1,7 @@
 from triangle_ship import TriangleShip
 from Asteroid import *
 import random
+from powerups import *
 
 # Initialize Pygame
 pygame.init()
@@ -9,7 +10,7 @@ pygame.init()
 full_width, full_height = pygame.display.Info().current_w, pygame.display.Info().current_h
 
 # Set window size to 75% of full screen
-WIDTH, HEIGHT = int(full_width * 0.75), int(full_height * 0.75)
+WIDTH, HEIGHT = int(full_width * 0.9), int(full_height * 0.9)
 
 # Create screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -95,7 +96,7 @@ def show_ship_selection(player_num):
 def show_confirmation(player_num, ship_type):
     screen.blit(BLACK, (0, 0))
     font = pygame.font.Font(None, 50)
-    display_text(f"Player {player_num} chose: {ship_type}", font, WHITE, WIDTH // 2, HEIGHT // 2)
+    display_text(f"Player {player_num}: {ship_type}", font, WHITE, WIDTH // 2, HEIGHT // 2)
     pygame.display.flip()
     pygame.time.delay(1000)
 
@@ -103,7 +104,9 @@ def show_confirmation(player_num, ship_type):
 def game_loop(ship1_type, ship2_type):
     ship1 = TriangleShip(WIDTH * .1, HEIGHT * .1, 270, ship1_type)
     ship2 = TriangleShip(WIDTH * .9, HEIGHT * .9, 270, ship2_type)
-
+    health_boost = []
+    boost_spawn_time = 4500
+    last_spawn_time = pygame.time.get_ticks()
     asteroids = [
         Asteroid(random.randint(0, int(WIDTH / 3)), HEIGHT * .3, 0, 5, 1, random.randint(40, 70), 10,
                              pygame.image.load('Sprites/Asteriod/asteroid-done.png')),
@@ -112,6 +115,7 @@ def game_loop(ship1_type, ship2_type):
         Asteroid(random.randint(int(WIDTH / 3 * 2), WIDTH), -50, 0, 5, 1, random.randint(40, 70), 10,
                          pygame.image.load('Sprites/Asteriod/asteroid-done.png'))
     ]
+
 
     running = True
     clock = pygame.time.Clock()
@@ -125,16 +129,46 @@ def game_loop(ship1_type, ship2_type):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]: ship1.rotate(1)
         if keys[pygame.K_a]: ship1.rotate(-1)
-        if keys[pygame.K_w]: ship1.move_forward(WIDTH, HEIGHT)
+        if keys[pygame.K_w]:
+            ship1.apply_thrust()
+            ship1.thrust_ani()
+        else:
+            ship1.not_thrust()
+
+
+
+
+        # Move in facing direction
+
         if keys[pygame.K_SPACE]: ship1.shoot()
+
+        # Ship 2 Controls
         if keys[pygame.K_RIGHT]: ship2.rotate(1)
         if keys[pygame.K_LEFT]: ship2.rotate(-1)
-        if keys[pygame.K_UP]: ship2.move_forward(WIDTH, HEIGHT)
+        if keys[pygame.K_UP]:
+            ship2.apply_thrust()
+            ship2.thrust_ani()
+        else:
+            ship2.not_thrust()  # Move in facing direction
         if keys[pygame.K_l]: ship2.shoot()
+
+        # Update ship positions
+        ship1.update_position(WIDTH, HEIGHT)
+        ship2.update_position(WIDTH, HEIGHT)
 
         for asteroid in asteroids:
             asteroid.move(WIDTH, HEIGHT)
             asteroid.rotate()
+
+        current_time = pygame.time.get_ticks()
+        if current_time - last_spawn_time > boost_spawn_time:
+            health_boost.append(Heal(random.randint(int(WIDTH * .1), int(WIDTH * .9)), random.randint(int(HEIGHT*.1), int(HEIGHT*.9)),pygame.image.load('Sprites/Powerups/heal_fin.png')))
+            last_spawn_time = current_time
+
+        for recharge in health_boost:
+            recharge.draw(screen)
+            recharge.handle_collision(ship1)
+            recharge.handle_collision(ship2)
 
         ship1.handle_ship_collision(ship2)
         for asteroid in asteroids:
@@ -156,7 +190,11 @@ def game_loop(ship1_type, ship2_type):
             if choice == "play_again":
                 game_loop(ship1_type, ship2_type)
             elif choice == "switch_characters":
-                main()
+                ship1_type = show_ship_selection(1)
+                show_confirmation(1, ship1_type)
+                ship2_type = show_ship_selection(2)
+                show_confirmation(2, ship2_type)
+                game_loop(ship1_type, ship2_type)
             elif choice == "quit":
                 pygame.quit()
                 quit()
