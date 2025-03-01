@@ -24,6 +24,11 @@ BLACK = (0, 0, 0)
 ship2 = TriangleShip(150, 100, 0, (255, 255, 0), 2.5, 3, 50, 40, 1, 20, 600, 420, 1000)
 ship1 = TriangleShip(1000, 600, 180, (255, 0, 0), 4, 5, 40, 7, 2, 9, 350, 250, 800)
 
+# Create asteroids
+# asteroid1 = Asteroid(random.randint(0, WIDTH/3), -50, 0, 5, 1, random.randint(30, 100), 100)
+# asteroid2 = Asteroid(random.randint(WIDTH/3, WIDTH/3*2), -50, 0, 5, 1, random.randint(30, 100), 100)
+# asteroid3 = Asteroid(random.randint(WIDTH/3*2, WIDTH), -50, 0, 5, 1, random.randint(30, 100), 100)
+
 # Game loop
 running = True
 clock = pygame.time.Clock()
