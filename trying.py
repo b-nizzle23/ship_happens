@@ -45,10 +45,10 @@ def game_loop():
     ship2 = TriangleShip(150,100,0,'base')
     ship1 = TriangleShip(1000, 600,180,'behemoth')
 
-# Create asteroids
-asteroid1 = Asteroid(random.randint(0, int(WIDTH/3)), -50, 0, 5, 1, random.randint(30, 100), 100)
-asteroid2 = Asteroid(random.randint(int(WIDTH/3), int(WIDTH/3*2)), HEIGHT/2, 0, 5, 1, random.randint(30, 100), 100)
-asteroid3 = Asteroid(random.randint(int(WIDTH/3*2), WIDTH), -50, 0, 5, 1, random.randint(30, 100), 100)
+    # Create asteroids
+    asteroid1 = Asteroid(random.randint(0, int(WIDTH/3)), HEIGHT*.3, 0, 5, 1, random.randint(10, 35), 100)
+    asteroid2 = Asteroid(random.randint(int(WIDTH/3), int(WIDTH/3*2)), HEIGHT/2, 0, 5, 1, random.randint(20, 70), 100)
+    asteroid3 = Asteroid(random.randint(int(WIDTH/3*2), WIDTH), -50, 0, 5, 1, random.randint(10, 35), 100)
 
     # Game loop
     running = True
@@ -56,6 +56,15 @@ asteroid3 = Asteroid(random.randint(int(WIDTH/3*2), WIDTH), -50, 0, 5, 1, random
 
     while running:
         screen.fill(BLACK)
+
+        # move asteroids
+        asteroid1.move(WIDTH, HEIGHT)
+        asteroid1.rotate()
+        asteroid2.move(WIDTH, HEIGHT)
+        asteroid2.rotate()
+        asteroid3.move(WIDTH, HEIGHT)
+        asteroid3.rotate()
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -78,26 +87,26 @@ asteroid3 = Asteroid(random.randint(int(WIDTH/3*2), WIDTH), -50, 0, 5, 1, random
         if keys[pygame.K_SPACE]:
             ship2.shoot()
 
-    # move asteroids
-    asteroid1.move()
-    asteroid1.rotate()
-    asteroid2.move()
-    asteroid2.rotate()
-    asteroid3.move()
-    asteroid3.rotate()
+        ship1.handle_ship_collision(ship2)
 
-    ship1.handle_ship_collision(ship2)
-    ship1.update_lasers(screen, ship2)
-    ship2.update_lasers(screen, ship1)
+        # In the game loop after handling ship movement
+        for asteroid in [asteroid1, asteroid2, asteroid3]:
+            ship1.handle_ship_asteroid_collision(asteroid)
+            ship2.handle_ship_asteroid_collision(asteroid)
+            ship1.handle_laser_asteroid_collision(asteroid)
+            ship2.handle_laser_asteroid_collision(asteroid)
 
-    # draw ships
-    ship1.draw(screen)
-    ship2.draw(screen)
+        ship1.update_lasers(screen, ship2)
+        ship2.update_lasers(screen, ship1)
 
-    # draw asteroids
-    asteroid1.draw(screen)
-    asteroid2.draw(screen)
-    asteroid3.draw(screen)
+        # draw ships
+        ship1.draw(screen)
+        ship2.draw(screen)
+
+        # draw asteroids
+        asteroid1.draw(screen)
+        asteroid2.draw(screen)
+        asteroid3.draw(screen)
 
         if ship1.is_dead() or ship2.is_dead():
             print("Player 2 won!" if ship2.is_dead() else "Player 1 wins!")

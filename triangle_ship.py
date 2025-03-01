@@ -168,6 +168,25 @@ class TriangleShip:
             enemy.x -= push_x
             enemy.y -= push_y
 
+    def handle_ship_asteroid_collision(self, asteroid):
+        # Calculate distance between ship and asteroid centers
+        distance = math.hypot(self.x - asteroid.x, self.y - asteroid.y)
+        
+        # Collision threshold is the sum of their sizes
+        min_distance = self.size + asteroid.size
+        
+        if distance < min_distance:  # If they collide
+            # Prevent ship from moving (can add push-back effect or stop movement here)
+            overlap = min_distance - distance
+            angle_between = math.atan2(self.y - asteroid.y, self.x - asteroid.x)
+            push_factor = 0.5
+            push_x = math.cos(angle_between) * overlap * push_factor
+            push_y = math.sin(angle_between) * overlap * push_factor
+            
+            self.x += push_x
+            self.y += push_y
+
+
     def draw(self, screen):
         points = [
             (self.x + self.size * math.cos(math.radians(self.angle)),

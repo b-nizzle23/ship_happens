@@ -22,3 +22,11 @@ class Laser:
 
     def has_expired(self):
         return self.distance_traveled >= self.range
+
+    def handle_laser_asteroid_collision(self, asteroid):
+        for laser in self.lasers[:]:
+            # Check if the laser has collided with the asteroid
+            distance = math.hypot(laser.x - asteroid.x, laser.y - asteroid.y)
+            if distance < asteroid.size:  # If laser hits asteroid
+                self.lasers.remove(laser)  # Remove the laser
+

@@ -10,13 +10,18 @@ class Asteroid:
         self.move_speed = move_speed
         self.size = size
         self.contact_damage = contact_damage
+        #self.image = pygame.image.load('Sprites/Asteroid/asteroid-done.png')
+        #self.image = pygame.transform.scale(self.image, (,))
 
     def rotate(self):
         self.angle += 1
 
-    def move(self):
-        self.x += random.randint(0,3)
-        self.y += random.randint(2,5)
+    def move(self, WIDTH, HEIGHT):
+        self.x += random.randint(0,1)
+        self.y += random.randint(1,3)
+        if self.y > HEIGHT:
+            self.x = random.randint(0, WIDTH)
+            self.y = -50
 
     def check_collision(self):
         return
@@ -26,3 +31,4 @@ class Asteroid:
 
     def draw(self, screen):
         pygame.draw.circle(screen, (120, 100, 90), (int(self.x), int(self.y)), self.size)
+        #screen.blit(self.image, self.rect.topleft)
