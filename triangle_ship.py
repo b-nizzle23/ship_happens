@@ -5,25 +5,126 @@ import time
 from laser import Laser
 
 class TriangleShip:
-    def __init__(self, x, y, angle, color, rotation_speed, move_speed, size, contact_damage, attack_speed, bullet_speed,
-                 bullet_range, bullet_damage, health):
-        self.x = x
-        self.y = y
-        self.angle = angle
-        self.color = color
-        self.rotation_speed = rotation_speed
-        self.move_speed = move_speed
-        self.size = size
-        self.contact_damage = contact_damage
-        self.health = health
-        self.max_health = health
-        self.attack_speed = attack_speed
-        self.bullet_speed = bullet_speed
-        self.bullet_range = bullet_range
+    def __init__(self, name):
+        # Dictionary that maps ship names to their parameters
+        ship_data = {
+            "base": {
+                "x": 1000,
+                "y": 600,
+                "angle": 180,
+                "color": (255, 0, 0),  # Red
+                "rotation_speed": 4,
+                "move_speed": 5,
+                "size": 40,
+                "contact_damage": 7,
+                "attack_speed": 2,
+                "bullet_speed": 9,
+                "bullet_range": 350,
+                "bullet_damage": 250,
+                "health": 800
+            },
+            "sniper": {
+                "x": 150,
+                "y": 100,
+                "angle": 0,
+                "color": (255, 255, 0),  # Yellow
+                "rotation_speed": 2.5,
+                "move_speed": 3,
+                "size": 50,
+                "contact_damage": 40,
+                "attack_speed": 1,
+                "bullet_speed": 20,
+                "bullet_range": 600,
+                "bullet_damage": 420,
+                "health": 1000
+            },
+            "melee": {
+                "x": 1000,
+                "y": 600,
+                "angle": 180,
+                "color": (255, 0, 0),  # Red
+                "rotation_speed": 4,
+                "move_speed": 5,
+                "size": 40,
+                "contact_damage": 7,
+                "attack_speed": 2,
+                "bullet_speed": 9,
+                "bullet_range": 350,
+                "bullet_damage": 250,
+                "health": 800
+            },
+            "behemoth": {
+                "x": 1000,
+                "y": 600,
+                "angle": 180,
+                "color": (255, 0, 0),  # Red
+                "rotation_speed": 4,
+                "move_speed": 5,
+                "size": 40,
+                "contact_damage": 7,
+                "attack_speed": 2,
+                "bullet_speed": 9,
+                "bullet_range": 350,
+                "bullet_damage": 250,
+                "health": 800
+            },
+            "assassin": {
+                "x": 1000,
+                "y": 600,
+                "angle": 180,
+                "color": (255, 0, 0),  # Red
+                "rotation_speed": 4,
+                "move_speed": 5,
+                "size": 40,
+                "contact_damage": 7,
+                "attack_speed": 2,
+                "bullet_speed": 9,
+                "bullet_range": 350,
+                "bullet_damage": 250,
+                "health": 800
+            },
+            "minigun": {
+                "x": 1000,
+                "y": 600,
+                "angle": 180,
+                "color": (255, 0, 0),  # Red
+                "rotation_speed": 4,
+                "move_speed": 5,
+                "size": 40,
+                "contact_damage": 7,
+                "attack_speed": 2,
+                "bullet_speed": 9,
+                "bullet_range": 350,
+                "bullet_damage": 250,
+                "health": 800
+            }
+        }
+
+        # Get the data for the selected ship name
+        if name in ship_data:
+            data = ship_data[name]
+        else:
+            raise ValueError(f"Invalid ship name: {name}")
+
+        # Assign values to the class properties
+        self.x = data["x"]
+        self.y = data["y"]
+        self.angle = data["angle"]
+        self.color = data["color"]
+        self.rotation_speed = data["rotation_speed"]
+        self.move_speed = data["move_speed"]
+        self.size = data["size"]
+        self.contact_damage = data["contact_damage"]
+        self.attack_speed = data["attack_speed"]
+        self.bullet_speed = data["bullet_speed"]
+        self.bullet_range = data["bullet_range"]
+        self.bullet_damage = data["bullet_damage"]
+        self.health = data["health"]
+        self.max_health = data["health"]
         self.lasers = []
         self.last_shot_time = 0
         self.last_collision_time = 0
-        self.bullet_damage = bullet_damage
+
 
     def rotate(self, direction):
         self.angle += self.rotation_speed * direction
