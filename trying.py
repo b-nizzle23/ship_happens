@@ -9,7 +9,7 @@ pygame.init()
 full_width, full_height = pygame.display.Info().current_w, pygame.display.Info().current_h
 
 # Set window size to 75% of full screen
-WIDTH, HEIGHT = int(full_width * 0.75), int(full_height * 0.75)
+WIDTH, HEIGHT = int(full_width * 0.9), int(full_height * 0.9)
 
 # Create screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -125,12 +125,19 @@ def game_loop(ship1_type, ship2_type):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]: ship1.rotate(1)
         if keys[pygame.K_a]: ship1.rotate(-1)
-        if keys[pygame.K_w]: ship1.move_forward(WIDTH, HEIGHT)
+        if keys[pygame.K_w]: ship1.apply_thrust()  # Move in facing direction
+
         if keys[pygame.K_SPACE]: ship1.shoot()
+
+        # Ship 2 Controls
         if keys[pygame.K_RIGHT]: ship2.rotate(1)
         if keys[pygame.K_LEFT]: ship2.rotate(-1)
-        if keys[pygame.K_UP]: ship2.move_forward(WIDTH, HEIGHT)
+        if keys[pygame.K_UP]: ship2.apply_thrust()  # Move in facing direction
         if keys[pygame.K_l]: ship2.shoot()
+
+        # Update ship positions
+        ship1.update_position(WIDTH, HEIGHT)
+        ship2.update_position(WIDTH, HEIGHT)
 
         for asteroid in asteroids:
             asteroid.move(WIDTH, HEIGHT)
