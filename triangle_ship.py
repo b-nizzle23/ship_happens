@@ -68,7 +68,7 @@ class TriangleShip:
                 "bullet_speed": 10,
                 "bullet_range": 500,
                 "bullet_damage": 420,
-                "health": 750
+                "health": 1000
             },
             "minigun": {
                 "color": (128, 0, 128),  # Purple
