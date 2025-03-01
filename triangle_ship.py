@@ -11,7 +11,7 @@ class TriangleShip:
         # Dictionary that maps ship names to their parameters
         ship_data = {
             "base": {
-                "image": pygame.image.load("Sprites/Ships/Base.png").convert_alpha(),  # Tan
+                "image": pygame.image.load("Sprites/Ships/base.png").convert_alpha(),  # Tan
                 "rotation_speed": 2.75,
                 "move_speed": vec(0,0),
                 "size": 30,
@@ -26,7 +26,7 @@ class TriangleShip:
                 "max_speed": 4
             },
             "sniper": {
-                "image": pygame.image.load("Sprites/Ships/Sniper.png").convert_alpha(),
+                "image": pygame.image.load("Sprites/Ships/sniper.png").convert_alpha(),
                 "rotation_speed": 2.25,
                 "move_speed": vec(0,0),
                 "size": 20,
@@ -42,7 +42,7 @@ class TriangleShip:
             },
             "melee": {
                 "angle": 180,
-                "image": pygame.image.load("Sprites/Ships/Melee.png").convert_alpha(),
+                "image": pygame.image.load("Sprites/Ships/melee.png").convert_alpha(),
                 "rotation_speed": 2.5,
                 "move_speed": vec(0,0),
                 "size": 35,
@@ -57,7 +57,7 @@ class TriangleShip:
                 "max_speed": 4.5
             },
             "behemoth": {
-                "image": pygame.image.load("Sprites/Ships/Behemoth.png").convert_alpha(),  # Blue
+                "image": pygame.image.load("Sprites/Ships/behemoth.png").convert_alpha(),  # Blue
                 "rotation_speed": 3,
                 "move_speed": vec(0,0),
                 "size": 45,
@@ -72,7 +72,7 @@ class TriangleShip:
                 "max_speed": 1.25
             },
             "assassin": {
-                "image": pygame.image.load("Sprites/Ships/Assassin.png").convert_alpha(),
+                "image": pygame.image.load("Sprites/Ships/assassin.png").convert_alpha(),
                 "rotation_speed": 3.5,
                 "move_speed": vec(0,0),
                 "size": 30,
@@ -88,7 +88,7 @@ class TriangleShip:
 
             },
             "minigun": {
-                "image": pygame.image.load("Sprites/Ships/Minigun.png").convert_alpha(),
+                "image": pygame.image.load("Sprites/Ships/minigun.png").convert_alpha(),
                 "rotation_speed": 2,
                 "move_speed": vec(0,0),
                 "size": 30,
@@ -133,12 +133,30 @@ class TriangleShip:
         self.vy = 0
         self.thrust = data["acceleration"]
         self.topspeed = data["max_speed"]# Acceleration speed
+        self.name = name
+        self.n = 1
+        self.j = 1
 
 
     def rotate(self, direction):
         self.angle += self.rotation_speed * direction
+    def thrust_ani(self):
+        self.n += 1
+        if self.n == 10:  # After 9 frames, switch to the next sprite
+            self.j += 1
+            self.n = 1  # Reset n to 1 for the next animation cycle
+
+        if self.j > 3:  # If j exceeds 3, reset it for the animation loop
+            self.j = 1
+
+        # Load the correct sprite based on the current animation frame
+        self.image = pygame.image.load(f"Sprites/Ships/Thrust ani/{self.name}/{self.name}{self.j}.png").convert_alpha()
+    def not_thrust(self):
+        self.image = pygame.image.load("Sprites/Ships/"+self.name+".png").convert_alpha()
+
 
     def apply_thrust(self):
+
         # Accelerate or decelerate in the direction the ship is facing
         rad = math.radians(self.angle)  # Convert degrees to radians
 

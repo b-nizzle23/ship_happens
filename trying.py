@@ -125,14 +125,27 @@ def game_loop(ship1_type, ship2_type):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]: ship1.rotate(1)
         if keys[pygame.K_a]: ship1.rotate(-1)
-        if keys[pygame.K_w]: ship1.apply_thrust()  # Move in facing direction
+        if keys[pygame.K_w]:
+            ship1.apply_thrust()
+            ship1.thrust_ani()
+        else:
+            ship1.not_thrust()
+
+
+
+
+        # Move in facing direction
 
         if keys[pygame.K_SPACE]: ship1.shoot()
 
         # Ship 2 Controls
         if keys[pygame.K_RIGHT]: ship2.rotate(1)
         if keys[pygame.K_LEFT]: ship2.rotate(-1)
-        if keys[pygame.K_UP]: ship2.apply_thrust()  # Move in facing direction
+        if keys[pygame.K_UP]:
+            ship2.apply_thrust()
+            ship2.thrust_ani()
+        else:
+            ship2.not_thrust()  # Move in facing direction
         if keys[pygame.K_l]: ship2.shoot()
 
         # Update ship positions
