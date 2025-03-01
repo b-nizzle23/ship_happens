@@ -190,7 +190,11 @@ def game_loop(ship1_type, ship2_type):
             if choice == "play_again":
                 game_loop(ship1_type, ship2_type)
             elif choice == "switch_characters":
-                main()
+                ship1_type = show_ship_selection(1)
+                show_confirmation(1, ship1_type)
+                ship2_type = show_ship_selection(2)
+                show_confirmation(2, ship2_type)
+                game_loop(ship1_type, ship2_type)
             elif choice == "quit":
                 pygame.quit()
                 quit()
