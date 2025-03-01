@@ -10,7 +10,7 @@ class TriangleShip:
         # Dictionary that maps ship names to their parameters
         ship_data = {
             "base": {
-                "color": (210, 180, 140),  # Tan
+                "image": pygame.image.load("Sprites/Ships/Base.png").convert_alpha(),  # Tan
                 "rotation_speed": 2.75,
                 "move_speed": 4,
                 "size": 30,
@@ -19,10 +19,11 @@ class TriangleShip:
                 "bullet_speed": 10,
                 "bullet_range": 600,
                 "bullet_damage": 250,
-                "health": 1000
+                "health": 1000,
+                "bullet_size": "normal"
             },
             "sniper": {
-                "color": (255, 255, 255),  # White
+                "image": pygame.image.load("Sprites/Ships/Sniper.png").convert_alpha(),
                 "rotation_speed": 2.25,
                 "move_speed": 3,
                 "size": 20,
@@ -31,11 +32,12 @@ class TriangleShip:
                 "bullet_speed": 20,
                 "bullet_range": 850,
                 "bullet_damage": 500,
-                "health": 750
+                "health": 750,
+                "bullet_size": "small"
             },
             "melee": {
                 "angle": 180,
-                "color": (255, 0, 0),  # Red
+                "image": pygame.image.load("Sprites/Ships/Melee.png").convert_alpha(),
                 "rotation_speed": 2.5,
                 "move_speed": 4.5,
                 "size": 35,
@@ -44,10 +46,11 @@ class TriangleShip:
                 "bullet_speed": 10,
                 "bullet_range": 600,
                 "bullet_damage": 100,
-                "health": 1000
+                "health": 1000,
+                "bullet_size": "normal"
             },
             "behemoth": {
-                "color": (0, 0, 255 ),  # Blue
+                "image": pygame.image.load("Sprites/Ships/Behemoth.png").convert_alpha(),  # Blue
                 "rotation_speed": 3,
                 "move_speed": 2.5,
                 "size": 45,
@@ -56,10 +59,11 @@ class TriangleShip:
                 "bullet_speed": 8,
                 "bullet_range": 500,
                 "bullet_damage": 750,
-                "health": 1200
+                "health": 1200,
+                "bullet_size": "big"
             },
             "assassin": {
-                "color": (128, 128, 128),  # Grey
+                "image": pygame.image.load("Sprites/Ships/Assassin.png").convert_alpha(),
                 "rotation_speed": 3.5,
                 "move_speed": 4.25,
                 "size": 30,
@@ -68,10 +72,11 @@ class TriangleShip:
                 "bullet_speed": 10,
                 "bullet_range": 500,
                 "bullet_damage": 420,
-                "health": 1000
+                "health": 1000,
+                "bullet_size": "small"
             },
             "minigun": {
-                "color": (128, 0, 128),  # Purple
+                "image": pygame.image.load("Sprites/Ships/Minigun.png").convert_alpha(),
                 "rotation_speed": 2,
                 "move_speed": 4,
                 "size": 30,
@@ -80,7 +85,8 @@ class TriangleShip:
                 "bullet_speed": 20,
                 "bullet_range": 600,
                 "bullet_damage": 100,
-                "health": 1000
+                "health": 1000,
+                "bullet_size": "small"
             }
         }
 
@@ -94,7 +100,7 @@ class TriangleShip:
         self.x = x
         self.y = y
         self.angle = angle
-        self.color = data["color"]
+        self.image = data["image"]
         self.rotation_speed = data["rotation_speed"]
         self.move_speed = data["move_speed"]
         self.size = data["size"]
@@ -108,6 +114,7 @@ class TriangleShip:
         self.lasers = []
         self.last_shot_time = 0
         self.last_collision_time = 0
+        self.bullet_Size = data["bullet_size"]
 
 
     def rotate(self, direction):
@@ -127,7 +134,7 @@ class TriangleShip:
     def shoot(self):
         current_time = time.time()
         if current_time - self.last_shot_time >= 1 / self.attack_speed:
-            laser = Laser(self.x, self.y, self.angle, self.bullet_speed, self.bullet_damage, self.bullet_range)
+            laser = Laser(self.x, self.y, self.angle, self.bullet_speed, self.bullet_damage, self.bullet_range, self.bullet_Size)
             self.lasers.append(laser)
             self.last_shot_time = current_time
 
@@ -169,15 +176,9 @@ class TriangleShip:
             enemy.y -= push_y
 
     def draw(self, screen):
-        points = [
-            (self.x + self.size * math.cos(math.radians(self.angle)),
-             self.y + self.size * math.sin(math.radians(self.angle))),
-            (self.x + self.size * math.cos(math.radians(self.angle + 130)),
-             self.y + self.size * math.sin(math.radians(self.angle + 130))),
-            (self.x + self.size * math.cos(math.radians(self.angle - 130)),
-             self.y + self.size * math.sin(math.radians(self.angle - 130))),
-        ]
-        pygame.draw.polygon(screen, self.color, points)
+        rotated_image = pygame.transform.rotate(self.image, -self.angle)
+        rect = rotated_image.get_rect(center=(self.x, self.y))
+        screen.blit(rotated_image, rect.topleft)
         self.draw_health_bar(screen)
 
     def draw_health_bar(self, screen):
