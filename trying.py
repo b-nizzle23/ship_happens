@@ -2,6 +2,7 @@ from triangle_ship import TriangleShip
 from Asteroid import *
 import random
 from powerups import *
+import time
 
 # Initialize Pygame
 pygame.init()
@@ -44,7 +45,10 @@ def show_menu():
 def show_end_menu(winner):
     font = pygame.font.Font(None, 50)
     screen.blit(BLACK, (0, 0))
-    display_text(f"{winner} wins! Play again?", font, WHITE, WIDTH // 2, HEIGHT // 3)
+    if winner == "Nobody":
+        display_text(f"Its a Tie! Play again?", font, WHITE, WIDTH // 2, HEIGHT // 3)
+    else:
+        display_text(f"{winner} wins! Play again?", font, WHITE, WIDTH // 2, HEIGHT // 3)
 
     options = ["Play Again", "Switch Characters", "Quit"]
     rects = []
@@ -101,6 +105,7 @@ def show_confirmation(player_num, ship_type):
     pygame.time.delay(1000)
 
 
+
 def game_loop(ship1_type, ship2_type):
     ship1 = TriangleShip(WIDTH * .1, HEIGHT * .1, 270, ship1_type)
     ship2 = TriangleShip(WIDTH * .9, HEIGHT * .9, 270, ship2_type)
@@ -133,7 +138,8 @@ def game_loop(ship1_type, ship2_type):
             ship1.apply_thrust()
             ship1.thrust_ani()
         else:
-            ship1.not_thrust()
+            if not ship1.is_dead():
+                ship1.not_thrust()
 
 
 
@@ -149,7 +155,8 @@ def game_loop(ship1_type, ship2_type):
             ship2.apply_thrust()
             ship2.thrust_ani()
         else:
-            ship2.not_thrust()  # Move in facing direction
+            if not ship2.is_dead():
+                ship2.not_thrust()  # Move in facing direction
         if keys[pygame.K_l]: ship2.shoot()
 
         # Update ship positions
@@ -185,20 +192,36 @@ def game_loop(ship1_type, ship2_type):
             asteroid.draw(screen)
 
         if ship1.is_dead() or ship2.is_dead():
-            winner = "Player 2" if ship1.is_dead() else "Player 1"
-            choice = show_end_menu(winner)
-            if choice == "play_again":
-                game_loop(ship1_type, ship2_type)
-            elif choice == "switch_characters":
-                ship1_type = show_ship_selection(1)
-                show_confirmation(1, ship1_type)
-                ship2_type = show_ship_selection(2)
-                show_confirmation(2, ship2_type)
-                game_loop(ship1_type, ship2_type)
-            elif choice == "quit":
-                pygame.quit()
-                quit()
-            running = False
+            done = False
+            if ship1.is_dead():
+                ship1.explode()
+                ship1.update_explosion_animation()
+                done = ship1.lasers_gone()
+            else:
+                ship2.explode()
+                ship2.update_explosion_animation()
+                done = ship2.lasers_gone()
+
+
+
+            if done:
+                if ship1.is_dead() and ship2.is_dead():
+                    winner = "Nobody"
+                else:
+                    winner = "Player 2" if ship1.is_dead() else "Player 1"
+                choice = show_end_menu(winner)
+                if choice == "play_again":
+                    game_loop(ship1_type, ship2_type)
+                elif choice == "switch_characters":
+                    ship1_type = show_ship_selection(1)
+                    show_confirmation(1, ship1_type)
+                    ship2_type = show_ship_selection(2)
+                    show_confirmation(2, ship2_type)
+                    game_loop(ship1_type, ship2_type)
+                elif choice == "quit":
+                    pygame.quit()
+                    quit()
+                running = False
 
         pygame.display.flip()
         clock.tick(60)

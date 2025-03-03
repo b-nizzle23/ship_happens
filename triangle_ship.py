@@ -4,7 +4,11 @@ import math
 import time
 from laser import Laser
 import pygame
+
+
+
 vec = pygame.math.Vector2
+import random
 
 class TriangleShip:
     def __init__(self, x, y, angle, name):
@@ -112,9 +116,13 @@ class TriangleShip:
 
         # Assign values to the class properties
         self.x = x
+        self.dead = False
         self.y = y
         self.angle = angle
-        self.image = data["image"]
+        if self.dead:
+            self.image = pygame.image.load("")
+        else:
+            self.image = data["image"]
         self.rotation_speed = data["rotation_speed"]
         self.move_speed = data["move_speed"]
         self.size = data["size"]
@@ -136,68 +144,79 @@ class TriangleShip:
         self.name = name
         self.n = 1
         self.j = 1
+        self.explosion_sprites = [pygame.image.load(f"Sprites/Explode/explode{i}.png").convert_alpha() for i in
+                                  range(2, 4)]
+        self.explosion_frame = 0
+        self.explosion_image = pygame.image.load("Sprites/Bullets/Bullet.png").convert_alpha()
+        self.aniconter = 0
+        self.explosion_loops = 0
 
 
     def rotate(self, direction):
         self.angle += self.rotation_speed * direction
     def thrust_ani(self):
-        self.n += 1
-        if self.n == 10:  # After 9 frames, switch to the next sprite
-            self.j += 1
-            self.n = 1  # Reset n to 1 for the next animation cycle
+        if not self.is_dead():
+            self.n += 1
+            if self.n == 10:  # After 9 frames, switch to the next sprite
+                self.j += 1
+                self.n = 1  # Reset n to 1 for the next animation cycle
 
-        if self.j > 3:  # If j exceeds 3, reset it for the animation loop
-            self.j = 1
+            if self.j > 3:  # If j exceeds 3, reset it for the animation loop
+                self.j = 1
 
-        # Load the correct sprite based on the current animation frame
-        self.image = pygame.image.load(f"Sprites/Ships/Thrust ani/{self.name}/{self.name}{self.j}.png").convert_alpha()
+            # Load the correct sprite based on the current animation frame
+            self.image = pygame.image.load(f"Sprites/Ships/Thrust ani/{self.name}/{self.name}{self.j}.png").convert_alpha()
     def not_thrust(self):
-        self.image = pygame.image.load("Sprites/Ships/"+self.name+".png").convert_alpha()
+        if not self.is_dead():
+            self.image = pygame.image.load("Sprites/Ships/"+self.name+".png").convert_alpha()
 
 
     def apply_thrust(self):
+        if not self.is_dead():
 
-        # Accelerate or decelerate in the direction the ship is facing
-        rad = math.radians(self.angle)  # Convert degrees to radians
+            # Accelerate or decelerate in the direction the ship is facing
+            rad = math.radians(self.angle)  # Convert degrees to radians
 
-        # Apply thrust in the x direction (forward/backward)
-        self.vx += self.thrust * math.cos(rad)
+            # Apply thrust in the x direction (forward/backward)
+            self.vx += self.thrust * math.cos(rad)
 
-        # Apply thrust in the y direction (forward/backward)
-        self.vy += self.thrust * math.sin(rad)
+            # Apply thrust in the y direction (forward/backward)
+            self.vy += self.thrust * math.sin(rad)
 
-        # Ensure the velocity does not exceed the max speed in any direction
-        speed = math.hypot(self.vx, self.vy)  # Calculate current speed
-        if speed > self.topspeed:
-            # Normalize the velocity vector and apply max speed
-            self.vx = (self.vx / speed) * self.topspeed
-            self.vy = (self.vy / speed) * self.topspeed
+            # Ensure the velocity does not exceed the max speed in any direction
+            speed = math.hypot(self.vx, self.vy)  # Calculate current speed
+            if speed > self.topspeed:
+                # Normalize the velocity vector and apply max speed
+                self.vx = (self.vx / speed) * self.topspeed
+                self.vy = (self.vy / speed) * self.topspeed
 
     def update_position(self, width, height):
-        # Move ship based on velocity
-        self.x += self.vx
-        self.y += self.vy
+        if not self.is_dead():
+            # Move ship based on velocity
+            self.x += self.vx
+            self.y += self.vy
 
-        # Ensure the ship doesn't go beyond the screen boundaries
-        if self.x < 0:
-            self.x = 0  # Prevent moving beyond the left edge
-        elif self.x > width:
-            self.x = width  # Prevent moving beyond the right edge
+            # Ensure the ship doesn't go beyond the screen boundaries
+            if self.x < 0:
+                self.x = 0  # Prevent moving beyond the left edge
+            elif self.x > width:
+                self.x = width  # Prevent moving beyond the right edge
 
-        if self.y < 0:
-            self.y = 0  # Prevent moving beyond the top edge
-        elif self.y > height:
-            self.y = height  # Prevent moving beyond the bottom edge
+            if self.y < 0:
+                self.y = 0  # Prevent moving beyond the top edge
+            elif self.y > height:
+                self.y = height  # Prevent moving beyond the bottom edge
 
 
 
 
     def shoot(self):
-        current_time = time.time()
-        if current_time - self.last_shot_time >= 1 / self.attack_speed:
-            laser = Laser(self.x, self.y, self.angle, self.bullet_speed, self.bullet_damage, self.bullet_range, self.bullet_Size)
-            self.lasers.append(laser)
-            self.last_shot_time = current_time
+        if not self.is_dead():
+            current_time = time.time()
+            if current_time - self.last_shot_time >= 1 / self.attack_speed:
+                laser = Laser(self.x, self.y, self.angle, self.bullet_speed, self.bullet_damage, self.bullet_range, self.bullet_Size)
+                self.lasers.append(laser)
+                self.last_shot_time = current_time
 
     def update_lasers(self, screen, enemy):
         for laser in self.lasers[:]:
@@ -208,7 +227,8 @@ class TriangleShip:
                 laser.draw(screen)
                 if self.check_collision(laser, enemy):
                     enemy.health -= laser.damage
-                    self.lasers.remove(laser)
+                    if not laser.bullet_size == "shrapnel":
+                        self.lasers.remove(laser)
 
     def check_collision(self, laser, enemy):
         return math.hypot(laser.x - enemy.x, laser.y - enemy.y) < enemy.size
@@ -263,13 +283,42 @@ class TriangleShip:
         self.draw_health_bar(screen)
 
     def draw_health_bar(self, screen):
-        bar_width = 50
-        bar_height = 5
-        health_ratio = max(self.health / self.max_health, 0)
-        bar_x = self.x - bar_width // 2
-        bar_y = self.y - self.size - 10
-        pygame.draw.rect(screen, (255, 0, 0), (bar_x, bar_y, bar_width, bar_height))
-        pygame.draw.rect(screen, (0, 255, 0), (bar_x, bar_y, bar_width * health_ratio, bar_height))
+        if not self.is_dead():
+            bar_width = 50
+            bar_height = 5
+            health_ratio = max(self.health / self.max_health, 0)
+            bar_x = self.x - bar_width // 2
+            bar_y = self.y - self.size - 10
+            pygame.draw.rect(screen, (255, 0, 0), (bar_x, bar_y, bar_width, bar_height))
+            pygame.draw.rect(screen, (0, 255, 0), (bar_x, bar_y, bar_width * health_ratio, bar_height))
 
     def is_dead(self):
         return self.health <= 0
+
+    def explode(self):
+        if not self.dead:
+            for i in range(random.randint(5, 6)):
+                laser = Laser(self.x, self.y, random.randint(0, 360), random.uniform(.5, .75), 0, 100, 'shrapnel')
+                self.lasers.append(laser)
+                self.dead = True
+            self.update_explosion_animation()
+
+
+
+    def update_explosion_animation(self):
+        if self.is_dead() and self.explosion_loops < 3:
+            if self.explosion_frame % 10 == 0:
+                self.aniconter += 1
+                self.image = self.explosion_sprites[self.aniconter % len(self.explosion_sprites)]
+                if self.aniconter % len(self.explosion_sprites) == 0:
+                    self.explosion_loops += 1
+            self.explosion_frame += 1
+        else:
+            self.image = self.explosion_image
+            self.contact_damage = 0
+    def lasers_gone(self):
+        if not self.lasers:
+            return True
+
+
+
