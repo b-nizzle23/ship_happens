@@ -15,7 +15,7 @@ class Laser:
 
         if bullet_Size == "big":
             self.image = pygame.image.load("Sprites/Bullets/Big Bullet.png").convert_alpha()  # Ensure transparency
-            self.image = pygame.transform.scale(self.image, (22, 22))  # Resize if needed
+            self.image = pygame.transform.scale(self.image, (30, 30))  # Resize if needed
         elif bullet_Size == "normal":
             self.image = pygame.image.load("Sprites/Bullets/Bullet.png").convert_alpha()  # Ensure transparency
             self.image = pygame.transform.scale(self.image, (15, 15))  # Resize if needed
