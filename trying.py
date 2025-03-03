@@ -17,7 +17,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Triangle Ship Game")
 
 # Colors
-BLACK = pygame.image.load("Sprites/Background/Background.png")
+BLACK = pygame.image.load("Sprites/Background/Background.png").convert_alpha()
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 
