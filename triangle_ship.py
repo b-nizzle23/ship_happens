@@ -16,7 +16,7 @@ class TriangleShip:
                 "move_speed": vec(0,0),
                 "size": 30,
                 "contact_damage": 100,
-                "attack_speed": 1.5,
+                "attack_speed": 2.5,
                 "bullet_speed": 10,
                 "bullet_range": 600,
                 "bullet_damage": 250,
@@ -35,7 +35,7 @@ class TriangleShip:
                 "bullet_speed": 20,
                 "bullet_range": 850,
                 "bullet_damage": 500,
-                "health": 750,
+                "health": 600,
                 "bullet_size": "small",
                 "acceleration": .4,
                 "max_speed": 3
@@ -66,10 +66,10 @@ class TriangleShip:
                 "bullet_speed": 8,
                 "bullet_range": 500,
                 "bullet_damage": 750,
-                "health": 1200,
+                "health": 1700,
                 "bullet_size": "big",
                 "acceleration": .15,
-                "max_speed": 1.25
+                "max_speed": 1.75
             },
             "assassin": {
                 "image": pygame.image.load("Sprites/Ships/assassin.png").convert_alpha(),
@@ -93,10 +93,10 @@ class TriangleShip:
                 "move_speed": vec(0,0),
                 "size": 30,
                 "contact_damage": 100,
-                "attack_speed": 4,
+                "attack_speed": 6,
                 "bullet_speed": 20,
                 "bullet_range": 600,
-                "bullet_damage": 100,
+                "bullet_damage": 125,
                 "health": 1000,
                 "bullet_size": "small",
                 "acceleration": .25,
