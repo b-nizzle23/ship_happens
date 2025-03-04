@@ -27,7 +27,6 @@ class Laser:
         elif bullet_Size == "shrapnel":
             self.image = pygame.image.load("Sprites/Bullets/shrapnel.png").convert_alpha()  # Ensure transparency
             self.image = pygame.transform.scale(self.image, (random.randint(10,15), random.randint(10,15)))
-
         # Rotate to match the shooting direction
         self.rotated_image = pygame.transform.rotate(self.image, -self.angle)
         self.rect = self.rotated_image.get_rect(center=(self.x, self.y))
@@ -50,4 +49,3 @@ class Laser:
         # Check if the laser has collided with the asteroid
         if math.hypot(self.x - asteroid.x, self.y - asteroid.y) < asteroid.size:
             self.active = False  # Deactivate the laser
-

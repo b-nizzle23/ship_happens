@@ -4,6 +4,7 @@ import math
 import time
 from laser import Laser
 import pygame
+from Beam import Beam
 
 
 
@@ -105,7 +106,22 @@ class TriangleShip:
                 "bullet_size": "small",
                 "acceleration": .25,
                 "max_speed": 4
-            }
+            },
+            "beam": {
+                "image": pygame.image.load("Sprites/Ships/beam.png").convert_alpha(),  # Tan
+                "rotation_speed": 2.75,
+                "move_speed": vec(0, 0),
+                "size": 30,
+                "contact_damage": 100,
+                "attack_speed": 2.5,
+                "bullet_speed": 10,
+                "bullet_range": 400,
+                "bullet_damage": 250,
+                "health": 1000,
+                "bullet_size": "beam",
+                "acceleration": .25,
+                "max_speed": 4
+            },
         }
 
         # Get the data for the selected ship name
@@ -150,6 +166,8 @@ class TriangleShip:
         self.explosion_image = pygame.image.load("Sprites/Bullets/Bullet.png").convert_alpha()
         self.aniconter = 0
         self.explosion_loops = 0
+        self.beam = Beam(self.x, self.y, self.angle, self.bullet_damage, self.bullet_range) if self.name == "beam" else None
+
 
 
     def rotate(self, direction):
@@ -218,6 +236,14 @@ class TriangleShip:
                 self.lasers.append(laser)
                 self.last_shot_time = current_time
 
+    def toggle_beam(self):
+        if self.beam:
+            if self.beam.active:
+                self.beam.deactivate()
+            else:
+                self.beam.activate()
+
+
     def update_lasers(self, screen, enemy):
         for laser in self.lasers[:]:
             laser.move()
@@ -230,6 +256,12 @@ class TriangleShip:
                     if not laser.bullet_size == "shrapnel":
                         self.lasers.remove(laser)
 
+    def update_beam(self, screen, enemy):
+        if self.beam:
+            self.beam.update(self.x, self.y, self.angle, self.size)
+            self.beam.draw(screen)
+            if self.check_collision(self.beam, enemy):
+                enemy.health -= self.beam.damage
     def check_collision(self, laser, enemy):
         return math.hypot(laser.x - enemy.x, laser.y - enemy.y) < enemy.size
 
@@ -307,6 +339,8 @@ class TriangleShip:
 
     def update_explosion_animation(self):
         if self.is_dead() and self.explosion_loops < 3:
+            if self.name == "beam":
+                self.beam.deactivate()
             if self.explosion_frame % 10 == 0:
                 self.aniconter += 1
                 self.image = self.explosion_sprites[self.aniconter % len(self.explosion_sprites)]

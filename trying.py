@@ -22,7 +22,7 @@ BLACK = pygame.image.load("Sprites/Background/Background.png")
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 
-SHIP_TYPES = ["base", "sniper", "melee", "behemoth", "assassin", "minigun"]
+SHIP_TYPES = ["base", "sniper", "melee", "behemoth", "assassin", "minigun", "beam"]
 
 
 def display_text(text, font, color, x, y):
@@ -146,7 +146,11 @@ def game_loop(ship1_type, ship2_type):
 
         # Move in facing direction
 
-        if keys[pygame.K_SPACE]: ship1.shoot()
+        if keys[pygame.K_SPACE]:
+            if ship1_type == "beam":
+                ship1.toggle_beam()
+            else:
+                ship1.shoot()
 
         # Ship 2 Controls
         if keys[pygame.K_RIGHT]: ship2.rotate(1)
@@ -157,12 +161,16 @@ def game_loop(ship1_type, ship2_type):
         else:
             if not ship2.is_dead():
                 ship2.not_thrust()  # Move in facing direction
-        if keys[pygame.K_l]: ship2.shoot()
-
+        if keys[pygame.K_l]:
+            if ship2_type == "beam":
+                ship2.toggle_beam()
+            else:
+                ship2.shoot()
         # Update ship positions
         ship1.update_position(WIDTH, HEIGHT)
         ship2.update_position(WIDTH, HEIGHT)
-
+        ship1.update_beam(screen, ship2)
+        ship2.update_beam(screen, ship1)
         for asteroid in asteroids:
             asteroid.move(WIDTH, HEIGHT)
             asteroid.rotate()
@@ -184,6 +192,7 @@ def game_loop(ship1_type, ship2_type):
 
         ship1.update_lasers(screen, ship2)
         ship2.update_lasers(screen, ship1)
+
 
         # draw ships
         ship1.draw(screen)
