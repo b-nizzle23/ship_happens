@@ -18,7 +18,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Triangle Ship Game")
 
 # Colors
-BLACK = pygame.image.load("Sprites/Background/Background.png")
+BLACK = pygame.image.load("Sprites/Background/Background.png").convert_alpha()
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 
@@ -107,9 +107,10 @@ def show_confirmation(player_num, ship_type):
 
 
 def game_loop(ship1_type, ship2_type):
-    ship1 = TriangleShip(WIDTH * .1, HEIGHT * .1, 270, ship1_type)
-    ship2 = TriangleShip(WIDTH * .9, HEIGHT * .9, 270, ship2_type)
+    ship1 = TriangleShip(WIDTH * .1, HEIGHT * .1, 0, ship1_type)
+    ship2 = TriangleShip(WIDTH * .9, HEIGHT * .9, 180, ship2_type)
     health_boost = []
+    healImage = pygame.image.load('Sprites/Powerups/heal_fin.png')
     boost_spawn_time = 4500
     last_spawn_time = pygame.time.get_ticks()
     asteroids = [
@@ -177,7 +178,7 @@ def game_loop(ship1_type, ship2_type):
 
         current_time = pygame.time.get_ticks()
         if current_time - last_spawn_time > boost_spawn_time:
-            health_boost.append(Heal(random.randint(int(WIDTH * .1), int(WIDTH * .9)), random.randint(int(HEIGHT*.1), int(HEIGHT*.9)),pygame.image.load('Sprites/Powerups/heal_fin.png')))
+            health_boost.append(Heal(random.randint(int(WIDTH * .1), int(WIDTH * .9)), random.randint(int(HEIGHT*.1), int(HEIGHT*.9)),healImage))
             last_spawn_time = current_time
 
         for recharge in health_boost:
