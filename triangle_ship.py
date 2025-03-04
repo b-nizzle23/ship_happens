@@ -105,7 +105,23 @@ class TriangleShip:
                 "bullet_size": "small",
                 "acceleration": .25,
                 "max_speed": 4
+            },
+            "spy": {
+                "image":pygame.image.load("Sprites/Ships/sniper.png").convert_alpha(),
+                'rotation_speed': 3.5,
+                'move_speed': vec(0,0),
+                'size': 20,
+                "contact_damage": 50,
+                "attack_speed": 4,
+                "bullet_speed": 20,
+                "bullet_range": 800,
+                "bullet_damage": 100,
+                "health": 600,
+                "bullet_size": "small",
+                "acceleration": .5,
+                "max_speed": 4
             }
+
         }
 
         # Get the data for the selected ship name

@@ -18,11 +18,11 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Triangle Ship Game")
 
 # Colors
-BLACK = pygame.image.load("Sprites/Background/Background.png")
+BLACK = pygame.image.load("Sprites/Background/Background.png").convert_alpha()
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 
-SHIP_TYPES = ["base", "sniper", "melee", "behemoth", "assassin", "minigun"]
+SHIP_TYPES = ["base", "sniper", "melee", "behemoth", "assassin", "minigun",'spy']
 
 
 def display_text(text, font, color, x, y):
