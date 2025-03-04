@@ -16,7 +16,7 @@ class TriangleShip:
                 "move_speed": vec(0,0),
                 "size": 30,
                 "contact_damage": 100,
-                "attack_speed": 1.5,
+                "attack_speed": 2.5,
                 "bullet_speed": 10,
                 "bullet_range": 600,
                 "bullet_damage": 250,
