@@ -116,7 +116,7 @@ class TriangleShip:
                 "attack_speed": 2.5,
                 "bullet_speed": 10,
                 "bullet_range": 400,
-                "bullet_damage": 250,
+                "bullet_damage": 5,
                 "health": 1000,
                 "bullet_size": "beam",
                 "acceleration": .25,
@@ -257,11 +257,12 @@ class TriangleShip:
                         self.lasers.remove(laser)
 
     def update_beam(self, screen, enemy):
-        if self.beam:
-            self.beam.update(self.x, self.y, self.angle, self.size)
+        if self.beam and self.beam.active:
+            self.beam.update(self.x, self.y, self.angle)
             self.beam.draw(screen)
-            if self.check_collision(self.beam, enemy):
+            if self.beam.check_collision(enemy):
                 enemy.health -= self.beam.damage
+
     def check_collision(self, laser, enemy):
         return math.hypot(laser.x - enemy.x, laser.y - enemy.y) < enemy.size
 
